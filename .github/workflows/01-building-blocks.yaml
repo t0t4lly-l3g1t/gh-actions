@@ -12,7 +12,7 @@ jobs:
   echo-goodbye:
     runs-on: ubuntu-latest
     steps:
-      - name: Failed step
+      - name: Success step
         run: |
           echo "I will not fail now because of the exit 0 below."
           exit 0
