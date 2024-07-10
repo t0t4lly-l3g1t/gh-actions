@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Failed step
         run: |
-          echo "I will won't fail now."
+          echo "I will not fail now because of the exit 0 below."
           exit 0
       - name: Say Goodbye
         run: echo "Goodbye!"
