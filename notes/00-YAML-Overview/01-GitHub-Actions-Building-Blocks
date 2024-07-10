@@ -1,0 +1,36 @@
+GitHub actions are made up of: 
+- Workflows
+- Jobs
+- Steps 
+
+Workflows: 
+- defined at the repo level. 
+- define what triggers start the workflow. 
+- workflows are composed of one or more jobs. 
+
+Jobs: 
+- jobs are defined at the workflow level. 
+- define in which execution env they are run. 
+- composed of one or more steps. 
+- by DEFAULT jobs are run in paralell (unless you specify dependencies on other jobs)
+
+Steps: 
+- defined at the job level. 
+- define the actual script or GitHub action that will be executed. 
+- run sequentially by default. 
+
+example: 
+
+name: My workflow
+on: push
+
+jobs:
+  my-first-job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello World"
+  my-second-job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "buh-bye"
+      
