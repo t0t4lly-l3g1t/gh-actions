@@ -1,0 +1,20 @@
+Workflows Events: 
+- Think of these as different triggers. 
+- There are may ways to tyrigger github workflow
+- docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows listed on the right.  
+
+Repository events:
+Below are some exmple.
+- push: tirggered when someone pushes to the repo. 
+- issues: triggered by a varity of events related to issues. 
+- pull_request: triggered by a varity of events related to PRs. 
+- pull_request_review: triggered by a varity of events related to PR reviews (submitting, editing, deleting)
+- fork: triggered when your repo is forked. 
+
+Manual Trigger: 
+- Trigger via the UI: Triggered from the Actions tab in GitHub. 
+- Triggered via an API call: Triggered via GitHub's REST API. 
+- Triggered from another workflow: Triggered from within another workflow. 
+
+Scheduled: 
+- Run a workflow as a cron job. 
