@@ -1,0 +1,27 @@
+Basic Structure: 
+- Think of this as a dict with key:values. 
+- These values can be primatives like a sting, bool, or int. 
+- A nested dict example would be a confic with a path and an env. 
+
+config:
+  path: first-dir/file.yaml
+  environment: staging
+
+Array: 
+- YAML can also contain arrays. 
+- Example of an array that contains colors. 
+- Values in the array can be mixed: string, int, bool. 
+- Not the entries in the array start with a "-"
+- You can also have arrays of objects. 
+- The array can also be nested as needed. 
+
+colors: # an array of colors
+  - name: red # first value in the array.
+    hex: ff0000
+    lables: # an array of labels
+      - experimenatl  # first value in the array. 
+      - accessibility
+  - green
+    hex: 00ff00
+  - blue
+    hex: 0000ff
