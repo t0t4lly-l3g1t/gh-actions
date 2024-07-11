@@ -1,0 +1,18 @@
+Workflow Contexts:
+- Access inbformation about runs, variables, jobs, and more. 
+- Github provides multiple sources of data in different contexts so that you can 
+provide all necessary info to a workload.
+- docs: https://docs.github.com/en/actions/learn-github-actions/contexts
+- Important to know: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+
+Examples:
+- github: commit SHA, Event Name, Ref of branch or tag triggering a workflow
+- env: contains variables that have been defined in a workflow, job, or step. 
+changes based on which part of the workflow is executing. 
+- inputs: contains inpuit properties passed via the keyword "with" to an aciton, to a reusable workflow, or manually 
+triggered workflow. 
+- vars: contains custom configuration variables set at the org, repo and env levels. 
+- secrets
+- matrix
+- needs
+
