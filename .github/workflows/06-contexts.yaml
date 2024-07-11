@@ -1,7 +1,13 @@
 name: 06 - Contexts
+run-name: 06 - Contexts | DEBUG - ${{ inputs.debug }}
+
 on:
   push:
   workflow_dispatch:
+    inputs:
+        debug:
+            type: boolean
+            default: false
 
 jobs:
     echo-data:
@@ -18,6 +24,7 @@ jobs:
               echo "Run Number: ${{ github.run_number }}"
           - name: Retrieve Variable
             env: 
-              MY_VAR: ${{ vars.MY_VAR }} 
+              MY_VAR: ${{ vars.MY_VAR }} # this is a variable in my repo.
             run: |
               echo "The value of MY_VAR is: $MY_VAR"
+              echo "Another way to see the value of MY_VAR: ${{ vars.MY_VAR }}"
