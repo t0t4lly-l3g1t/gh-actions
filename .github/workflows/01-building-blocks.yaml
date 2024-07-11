@@ -1,6 +1,6 @@
 name: 01 - Building Blocks
 on: 
-  workflow_dispatch:
+  workflow_dispatch: # this makes is so the job can only be triggered in the UI. 
 
 jobs:
   echo-hello:
