@@ -1,0 +1,34 @@
+Activity Types: 
+- Spcify which types of certain triggers execute a workflow. 
+- Triggers have multiple activity types that can be leveraged. 
+- docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+
+- Using a pull_request event as an example: 
+- opened: runs the workflow whenever a PR is opened. 
+- synchronize: runs the workflow whenever a new commit is pushed to the HEAD ref of the PR. 
+- closed
+- assigned
+- labeled
+- edited 
+
+EXAMPLE: 
+https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+
+name: My NPM package workflow
+on:
+  pull_request:
+    types: [opened, synchronize] # run this workflow when a PR is opened OR synchronise
+    branches: # run the workflow when the target branches are main OR release. In this case ONE of EACH condition must be met for the workflow to run. 
+      - main
+      - 'releases/**'
+
+jobs:
+  node-20-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run test
+

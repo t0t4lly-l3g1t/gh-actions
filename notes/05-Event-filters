@@ -1,0 +1,35 @@
+Event Filters: 
+- Spcify under which conditions a specific event triggers a workflow. 
+- docs: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on (look at types on the right)
+
+If you have a on push event you can have it trigger: 
+- branches: specifies which branches must match in order for the workflow to execute. 
+- branches_ignore: specifies which branches must not match in order for the workflow to execute. 
+- tags
+- tags_ignore
+- paths
+- paths_ignore
+
+EXAMPLE: 
+
+name: Myu NPM package workflow
+on:
+  push:
+    branches:
+      - main # run on any push to the main branch
+      - 'releases/**' # run on any branch that starts with releses/ and then anything else. 
+    paths-ignore:
+      - 'docs/**' # ignore any files in the docs folder. 
+
+jobs:
+  node-16-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm test
+
+If there are multiple filters specified all of them must be satisfied for the workflow to run. 
+These are "and" conditions and NOT "or" conditions. 
