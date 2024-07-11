@@ -2,7 +2,9 @@ name: 02 - Workflow Events
 on:
   push:
   pull_request:
-  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *' # cron example that triggeres the job every 5min.
+  workflow_dispatch: # this is the manual triggerr option that can be done in the UI. 
     
 jobs:
   echo:
