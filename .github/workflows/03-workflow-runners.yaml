@@ -2,7 +2,7 @@ name: 03 - Workflow Runners
 on: 
   # push:
   workflow_dispatch:
-    
+
 jobs:
     ubuntu-echo:
         runs-on: ubuntu-latest
@@ -13,6 +13,6 @@ jobs:
         steps:
             - run: echo "This job is running on the ${{ runner.os }} OS."
     macos-echo:
-        runs-on: macos-latest
+        runs-on: macos-latest # note macOS runners are expen$ive. 
         steps:
             - run: echo "This job is running on ${{ runner.os }}."
