@@ -1,0 +1,28 @@
+Third Party Actions
+
+Example of using a thrid party actions: 
+
+name: My NPM package workflow
+on:
+  push:
+
+jobs:
+  node-20-release:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/setup-node@v3 # this is using an official GitHub action (as noted by "actions/")
+      with:
+        node-version: 20
+    - run: npm ci
+    - run: npm test
+    - run: npm publish
+
+Why you want to use third pary actions: 
+- Avoids repetitive and extensive commands, and keeps things DRY. 
+- Can be configured via the "with" k:v pair. Makes flexible and reusable. 
+- Can be compbined with other steps. Can be used to encapsulate setup tasks before running other commands. 
+- Can create your own actions for public or private use. 
+
+GitHub Action Marketplace: 
+- https://github.com/marketplace?type=actions
+- You should mostly focus on actions that are by verified creators. 
