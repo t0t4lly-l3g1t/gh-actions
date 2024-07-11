@@ -9,7 +9,12 @@ jobs:
         # 0. Check out the code from the repo.
          - name: Checkout code
            uses: actions/checkout@v4
-         - name: Print Dirs
-           run: ls
+         - name: Setup Node
+           uses: actions/setup-node@v4
+           with:
+            node-version: '22.x'
+         - name: Install Deps
+           working-directory: 04-using-actions-test-app/react-app/
+           run: npm ci
         # 1. install deps for the react application. 
         # 2. Run automated tests. 
