@@ -14,4 +14,4 @@ jobs:
     macos-echo:
         runs-on: macos-latest
         steps:
-            - run: echo "This job is running on the ${{ runner.os }} OS."
+            - run: echo "This job is running on ${{ runner.os }}."
