@@ -1,0 +1,18 @@
+Workflow Runners
+
+Pro-Tip: Keep VM resources in mind when running commands that rely on parallel execution. 
+
+GitHub Hosted Option:
+- These are VMs that execute jobs from workflows. 
+- GitHub-hosted runner VMs are the default option. 
+- GitHub-hosted runners are a managed service. 
+- GitHub-hosted runners are scoped to a job. Steps share the VM but the jobs don't. 
+By default each job recieves a clean VM instance. 
+
+Self-hosted: 
+- WARNING!!! -> Do not use self-hosted runners on public repos. 
+- Run workflows on almost any infra of your choice. 
+- Full control over the VM infra
+- Not managed so you are responsibil for the management of the VM and infra. 
+- Can be added at the repo, org, or enterprise level. 
+- Jobs do not nessessarily have to run on a clean instance. 
