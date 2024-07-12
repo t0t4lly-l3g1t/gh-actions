@@ -1,0 +1,23 @@
+Workflow Functions: 
+- These are out of the box functions used to model complex behavior
+
+General purpose functions: 
+- Provides a set of utility functions to interact with data from multiple contexts and model more complex
+behavior, such as more advanced control of the workflow and job execution. 
+- contains(): eval if one argument contains another argument. 
+- startsWith(): does a string start with something
+- endsWith(): does a string end with something
+- fromJSON(): used to transform a string into another data type. Can be used to convert variables
+from a string to different data types. 
+- toJSON(): used to transform some data into a JSON sting. 
+
+
+Status check functions: 
+- Provides a set of functions that allow using the status of the workflow, previous jobs or steps to
+define weather a certian job or step should be executed. 
+- success(): returns true if everything before the job or step where this function has been called was a success. 
+- failure(): returns true if any of the previous steps have failed. 
+- always(): always returns true.
+- cancelled(): returns true if the workflow was cancelled. 
+- IT IS BETTER TO USE !cancelled() as opposed to always() as !cancelled() can be used to execute jobs or steps 
+even if previous jobs or steps failed, but to prevent execution in case the workflow is canceled. 
