@@ -2,18 +2,20 @@ name: 08 - Using Variables
 on:
     #push:
     workflow_dispatch:
-env:
+
+env: # at this level vars are avaiable to all jobs, and steps. These are globals.
     WORKFLOW_VAR: "I am a workflow env var"
     OVERWRITTEN: "I will be overwritten"
+
 jobs:
     echo:
       runs-on: ubuntu-latest
-      env:
+      env: # at this level vars are available to this job
         JOB_VAR: "I am a job env var"
         OVERWRITTEN: "I have been overwritten at the job level."
       steps:
         - name: Print Env Variables
-          env:
+          env: # at this level the vars are only available to the step where they are defined. 
             STEP_VAR: "I am a step var"
             STEP_VAR_2: "I am another step var"
           run: |
@@ -22,8 +24,6 @@ jobs:
             echo "Job env var: ${{ env.JOB_VAR }}"
             echo "Workflow env var: ${{ env.WORKFLOW_VAR }}"
             echo "Overwritten: ${{ env.OVERWRITTEN }}"
-        
         - name: Print Overwritten Variables
           run: |
             echo "Overwritten: ${{ env.OVERWRITTEN }}"
-            

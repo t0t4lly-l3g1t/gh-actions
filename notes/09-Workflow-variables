@@ -8,6 +8,7 @@ If the variable with the exact same names are set then:
 - Variables set at the step level override variables set at the job level
 - Variables at the job level override vatiables set at the workflow level
 - If the variable names are different then the behave in the context of where they are set. 
+- The variables are access using the syntax ${{ env.NAME-OF-VARIABLE-GOES-HERE }}
 
 Multiple Workflow behavior: 
 - Variables used by multiple workflows can be set at the organization, repo, and env level. 
