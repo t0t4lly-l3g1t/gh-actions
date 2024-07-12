@@ -54,7 +54,7 @@ jobs:
         steps:
             - name: Print Staging Variables
               run: |
-                echo "Staging Overwritten Var: ${{ vars.TARGET_VAR }}"
+                echo "Staging Var: ${{ vars.TARGET_VAR }}"
     
     echo-undefined:
         runs-on: ubuntu-latest
