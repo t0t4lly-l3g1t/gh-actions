@@ -1,0 +1,17 @@
+Workflow Variables: 
+- Use variables to set and reuse non-sensitive config information. 
+- Best pract is to write variables in ALL CAPS so they are easy to identify. 
+
+Single workflow behavior: 
+- In a single workflow variables can be set at the workflow, job and step level using "env:"
+If the variable with the exact same names are set then:
+- Variables set at the step level override variables set at the job level
+- Variables at the job level override vatiables set at the workflow level
+- If the variable names are different then the behave in the context of where they are set. 
+
+Multiple Workflow behavior: 
+- Variables used by multiple workflows can be set at the organization, repo, and env level. 
+- Variables with the exact same name will override in the following order. Variables set at the env level override 
+variables at the repo level, and variables set at the repo level override variables set at the org level. 
+- If the variables have different names then they behave in the context where they are set. 
+- The variables are access using the syntax ${{ vars.NAME-OF-VARIABLE-GOES-HERE }}
