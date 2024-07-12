@@ -1,0 +1,27 @@
+Workflow Expressions: 
+- This is how you use dynamic values and expressions in workflows. 
+- Can be used to reference informaiotn from multiple sources within a workflow. 
+- Must use the ${{ <expression here> }} syntax. 
+- Can be any combo of
+- literal values: stings, numbers, bool, and null. 
+- context values: values passed via the many workflow contexts that exist. 
+- functions: built in functions provided by GitHub actions. 
+- Expressions also support the use of operators like !, <, >, !=, &&, || and others. 
+
+EXAMPLE: 
+name: My NPM workflow
+on: [push, pull_request]
+
+jobs: 
+  note-16-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - if: ${{ github.event_name }} == "push"
+        run: |
+          echo "Triggered by a push event."
+          echo "Running on ${{ github.ref_name }}"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm test
