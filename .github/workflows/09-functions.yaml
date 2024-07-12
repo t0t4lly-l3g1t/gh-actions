@@ -7,6 +7,19 @@ jobs:
     echo-1:
         runs-on: ubuntu-latest
         steps:
+            - name: Print PR title
+              run: echo "${{ github.event.pull_request.title }}" # FYI: this can open up script injection attacks.
+            
+            - name: Print PR labels
+              run: |
+                cat << EOF
+                ${{ toJson(github.event.pull_request.labels) }}
+                EOF
+            
+            - name: Bug step
+              if: ${{!cancelled() && contains(github.event.pull_request.title, 'fix' )}}
+              run: echo "I am a bug fix."
+              
             - name: Failing step
               run: exit 1
             
