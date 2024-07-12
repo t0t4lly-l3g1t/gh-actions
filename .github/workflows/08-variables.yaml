@@ -26,4 +26,5 @@ jobs:
             echo "Overwritten: $OVERWRITTEN"
         
         - name: Overwrite Job Varables
-          run: "Step env var: $OVERWRITTEN"
+          run: |
+            echo "Overwritten: $OVERWRITTEN"
