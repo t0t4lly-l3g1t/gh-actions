@@ -6,7 +6,7 @@ on:
 env: # at this level vars are avaiable to all jobs, and steps. These are globals.
     WORKFLOW_VAR: "I am a workflow env var"
     OVERWRITTEN: "I will be overwritten"
-    UNDEFINED_VAR_WITH_DEFAULT:  ${{ vars.UNDEFINED_VAR || 'default value' }}"
+    UNDEFINED_VAR_WITH_DEFAULT:  ${{ vars.UNDEFINED_VAR || 'default value' }}
 
 jobs:
     echo:
