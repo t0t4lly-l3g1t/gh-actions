@@ -1,0 +1,46 @@
+Controlling the execution flow: 
+- This is how to executre jobs and steps conditionally and set dependencies between jobs. 
+- This leverages conditional job execution using the "if:" key in a workflow. 
+
+Standard Execution: 
+- Downstream jobs and steps execute only if upstream jobs and steps succeed. 
+- Example: 
+jobs:
+  job1:
+    - id: step1
+    - id: step2
+    - id: step3
+
+- In the above example the workflow will default to making use of the success() function. 
+- If any previous steps of jobs fail then subsiquent jobs will not be executed. 
+
+Conditional Execution: 
+- Downstream jobs and steps can be executed even if the upstream ones fail. 
+- Example: 
+jobs:
+  job1:
+    steps:
+      - id: step1
+      - id: step2
+      - id: step3
+        if ${{ !cancelled() }}
+
+- In the above example the job starts. Step 1 is executed, step 2 fails for whatever reason, and step 3 executes
+becauase the workflow has not been cancelled. 
+
+Sequential job execution using the "needs:" key: 
+- Non-dependent execution means that all jobs are executed in parallel by default. 
+- Dependant execution means that jobs wait until their dependencies successfully execute. 
+- Example: 
+jobs:
+  job1:
+  job2:
+  job3:
+    needs:
+      - job1
+      - job2
+  job4:
+    needs: job1
+
+- In the above example jobs 1 and 2 will execute in parallel because they have no dependencies however job3
+will not run unless jobs 1 and 2 are successful. Job4 will also not execute until job1 has completed successfully as well. 
