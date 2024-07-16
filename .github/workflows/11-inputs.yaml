@@ -5,7 +5,7 @@ on:
             dry-run:
                 type: boolean
                 required: false
-                description: "Skip deployment aand only print build output"
+                description: "Skip deployment and only print build output"
             target:
                 type: environment # this will fetch the envs we have setup in our repo
                 required: true
