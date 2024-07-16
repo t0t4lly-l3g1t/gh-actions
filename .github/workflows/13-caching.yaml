@@ -7,6 +7,15 @@ on:
                 description: "Do you want to execute the cache step?"
                 type: boolean
                 default: true
+            node-version:
+                description: "What version of node would you like to use?"
+                type: choice
+                options:
+                    - "20.x"
+                    - "21.x"
+                    - "22.x"
+                default:
+                    "22.x"
 
 jobs:
     build:
@@ -20,7 +29,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v3
               with:
-                node-version: '22.x'
+                node-version: ${{ inputs.node-version }}
             - name: Install Deps
               run: npm ci
             - name: Testing
