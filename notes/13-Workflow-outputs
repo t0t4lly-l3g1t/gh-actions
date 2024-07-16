@@ -6,7 +6,7 @@ jobs:
   welcome:
     runs-on: ubuntu-latest
     outputs: # Mention the outputs in the outputs seciton of the job. 
-      name: ${{ steps.step1.outputrs.NAME }} # Here "NAME" references the value provided in the step below. 
+      name: ${{ steps.step1.outputs.NAME }} # Here "NAME" references the value provided in the step below. 
     steps:
       - id: step1 # Define a step ID for the steps that produce outputs.
         run: echo "NAME=Duder" >> "$GITHUB_OUTPUT" # Echo key-value pairs to the $GITHUB_OUTPUT var using >> to append to the file.

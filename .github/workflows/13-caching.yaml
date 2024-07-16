@@ -1,0 +1,32 @@
+# This is making use of a basic application in the "13-caching" dir at the root of this project.
+name: 13 - Using Caching
+on: 
+    workflow_dispatch:
+        inputs:
+            use-cache:
+                description: "Do you want to execute the cache step?"
+                type: boolean
+                default: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: 13-caching/react-app # the default dir that will apply to all run commands below
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                node-version: '22.x'
+            - name: Install Deps
+              run: npm ci
+            - name: Testing
+              run: npm run test
+            - name: Build
+              run: npm run build
+            - name: Deploy to non-prod
+              run: echo "Deploying to non-prod"
+            

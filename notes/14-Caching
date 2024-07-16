@@ -1,0 +1,30 @@
+Caching: 
+- Helps speed up workflow runs by caching stable files. 
+- Caching allows us to store riles and later retrieve them based on a key. 
+- Workflows can access the cache from their branch or form the default branch. 
+- docs: https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+
+EXAMPLE: 
+steps: 
+  - uses: actions/cache@v3
+    id: cache
+    with:
+      path: node_modules
+      key: ${{ hashFiles('**/package-lock.joson') }}
+  - name: Install deps
+    if: steps.cache.outputs.cache-hit != 'true'
+    run: npm ci
+  - name: Lint & test
+    run: | 
+      npm run lint
+      npm run test
+
+Here is how the caching process works using the above as an example. 
+1. Workflow run starts
+2. using the cache action on line 8 execute the cache step with params. 
+3. If there is a cache matching key then restore the cache and execute Lint and Test. 
+- This means that if the "cache-hit" is true then that means that a cache for the key was found. 
+4. If there is no cache matching key then install dependencies and execute Lint and Test. 
+
+Use Case: 
+- Cache dependencies to speed up execution by avoiding always downloading and installing them. 
