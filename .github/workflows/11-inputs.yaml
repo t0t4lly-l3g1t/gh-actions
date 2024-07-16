@@ -36,5 +36,4 @@ jobs:
     steps:
         - name: deploy
           run: echo "Deploying to ${{ inputs.target }}"
-
           

@@ -1,0 +1,19 @@
+Workflow Outputs: 
+- Output data from jobs for later use. 
+Example: 
+
+jobs: 
+  welcome:
+    runs-on: ubuntu-latest
+    outputs: # Mention the outputs in the outputs seciton of the job. 
+      name: ${{ steps.step1.outputrs.NAME }} # Here "NAME" references the value provided in the step below. 
+    steps:
+      - id: step1 # Define a step ID for the steps that produce outputs.
+        run: echo "NAME=Duder" >> "$GITHUB_OUTPUT" # Echo key-value pairs to the $GITHUB_OUTPUT var using >> to append to the file.
+  
+  goodbye:
+    runs-on: ubuntu-latest
+    needs: 
+      - welcome # List the job as a dependency of jobs that need the output.
+    steps:
+      - run: echo "Bye, ${{ needs.welcome.outputs.name }}" # Make use of the outputs from the welcome job.
