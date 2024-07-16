@@ -1,0 +1,30 @@
+Workflow Inputs: 
+- Provide information to customize workflows and actions. 
+- Inputs enable us to request specific information form the workflow or action caller and use this 
+information at runtime. 
+Example:
+
+Github Action: 
+
+inputs:
+  url:
+    description: '...'
+    required: true
+  max-trials:
+    description: '...'
+    required: false
+    default: '60'
+
+- Inputs must be defined in the definition of reusable workflows or custom actions so that they can be used correctly. 
+
+Caller making use of the above input definitions: 
+jobs:
+  job1:
+    steps:
+      - name: Ping URL
+        uses: ping-url-example@v1
+        with: # this is the key used to interact with defined inputs. 
+          url: https://www.google.com
+          max-trials: 10
+
+- Use Cases include providing information such as target runtime version, caching keys, ...
