@@ -28,3 +28,8 @@ Here is how the caching process works using the above as an example.
 
 Use Case: 
 - Cache dependencies to speed up execution by avoiding always downloading and installing them. 
+
+- Caching is stored up to 7 days. 
+- Managed by the "cache" action
+- Reccomended when the stored data files are likely to be accessed only within the workflow for example
+build deps. 

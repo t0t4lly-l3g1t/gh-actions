@@ -1,0 +1,9 @@
+Using Artifacts: 
+- Artifacts are used to share data between jobs and store data after workflows have completed. 
+- Artifacts are stored up to 90 days be default. 
+- Managed by to actions upload-artifact and download-artifact
+- Reccomended when the stored files are likely to be accessed outside of the workflow for example with build outputs, 
+test results, and logs. 
+
+Use case: 
+- Uploading and downloading build outputs for deployments. 
