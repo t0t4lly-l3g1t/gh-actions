@@ -42,7 +42,7 @@ jobs:
                 color: [red, green]
                 shape: [circle, square]
                 size: [small, large]
-                include:
+                include: # order in this array matters. Full and partial matches to the values in the oritional matrix matters.
                 - opacity: 50 # this will be added to every value of the origional matrix echo because it can not be overwritten since it is not part of the origional martix
                 - color: red # anything with the color red will now have an opacity value of 75
                   opacity: 75
@@ -50,6 +50,10 @@ jobs:
                   opacity: 100
                 - color: red
                   shape: triangle
+                exclude: # exclude is processed BEFORE include
+                  - opacity: 75 # this will make sure that 75 is not included in the matrix
+
+                  
         steps:
         - name: Dummy step
           run: echo "${{ matrix.color }}-${{ matrix.shape }}-${{ matrix.size }}-${{ matrix.opacity }}"
