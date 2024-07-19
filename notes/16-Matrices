@@ -1,0 +1,29 @@
+Matrices: 
+- Allow you to run several variations of the same job. 
+EXAMPLE workflow: 
+
+name: My NPM package workflow
+on: 
+  push:
+
+jobs:
+  backwards-compatibility:
+    name: ${{ matrix.os }}-${{ matrix.node }} # the os and node vales will be cycled through to create 9 jobs as a result
+    strategy::
+      matrix:
+        node: [14, 16, 18]
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+Use case: 
+- Run test suits in parallel in multiple node versions before publishing an NPM package ensure backward compatibility. 
+
+WARNING: 
+- Each executed job counts towards billing. A Matrix generating 9 jobs of 3min each will lead to a 27min bill. 
