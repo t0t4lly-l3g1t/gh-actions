@@ -1,0 +1,21 @@
+Environments (env): 
+- Create muclipe envs with different rules to execute deployments with different rules. 
+- You can control things such as required approvers, branch restricitons, and variables. 
+
+Example workflow: 
+
+on:
+  push:
+    branches: main
+
+jobs: 
+  welcome:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+     - run: echo "Hi, ${{ vars.FIRST_NAME }}"
+
+Remember: Environment variables are available in the vars context, while secrets are available in the secrets context. 
+
+Use Case: You can use multiple github actions environments to require manual approvals before deploying to 
+higher envs. 
