@@ -35,20 +35,17 @@ jobs:
                 echo "Uploading test results"
 
     include-example: # this job goes into include: a bit more
-        name: ${{ matrix.color }}-${{ matrix.shape }}-${{ matrix.size }}
+        name: ${{ matrix.color }}-${{ matrix.shape }}-${{ matrix.size }}-${{ matrix.opacity}}
         runs-on: ubuntu-latest
         strategy:
             matrix:
                 color: [red, green]
                 shape: [circle, square]
                 size: [small, large]
-                include: 
+                include:
+                - opacity: 50 # this will be added to every value of the matrix echo
                 - color: red
                   shape: triangle
         steps:
         - name: Dummy step
-          run: echo "${{ matrix.color }}-${{ matrix.shape }}-${{ matrix.size }}"
-
-      
-    
-                
+          run: echo "${{ matrix.color }}-${{ matrix.shape }}-${{ matrix.size }}-${{ matrix.opacity }}"
