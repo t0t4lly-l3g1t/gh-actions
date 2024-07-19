@@ -45,7 +45,7 @@ jobs:
                 include:
                 - opacity: 50 # this will be added to every value of the origional matrix echo because it can not be overwritten since it is not part of the origional martix
                 - color: red # anything with the color red will now have an opacity value of 75
-                  opaity: 75
+                  opacity: 75
                 - shape: circle # any circles will now have an opacity value of 100
                   opacity: 100
                 - color: red
