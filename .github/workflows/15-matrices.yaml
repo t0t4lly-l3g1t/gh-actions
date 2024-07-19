@@ -51,7 +51,8 @@ jobs:
                 - color: red
                   shape: triangle
                 exclude: # exclude is processed BEFORE include
-                  - opacity: 75 # this will make sure that 75 is not included in the matrix
+                  - color: green # this will exclude small and large green circles
+                    shape: circle
 
                   
         steps:
