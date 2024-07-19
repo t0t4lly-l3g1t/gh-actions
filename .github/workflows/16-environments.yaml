@@ -29,3 +29,24 @@ jobs:
             - name: Echo Vars
               run: |
                 echo "Env variables: ${{ env.my-env-value}}"
+    echo-prod2:
+        runs-on: ubuntu-latest
+        needs: e2e-tests
+        environment: prod
+        env: 
+            my-env-value: ${{ vars.MY_ENV_VALUE || 'default value' }}
+        steps:
+            - name: Echo Vars
+              run: |
+                echo "Env variables: ${{ env.my-env-value}}"
+    echo-prod3:
+        runs-on: ubuntu-latest
+        needs: e2e-tests
+        environment: prod
+        env: 
+            my-env-value: ${{ vars.MY_ENV_VALUE || 'default value' }}
+        steps:
+            - name: Echo Vars
+              run: |
+                echo "Env variables: ${{ env.my-env-value}}"
+
