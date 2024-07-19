@@ -13,8 +13,15 @@ jobs:
             - name: Echo Vars
               run: |
                 echo "Env variables: ${{ env.my-env-value}}"
+    e2e-tests:
+        runs-on: ubuntu-latest
+        needs: echo-staging
+        steps:
+            - name: E2E Tests
+              run: echo "Running E2E tests"
     echo-prod:
         runs-on: ubuntu-latest
+        needs: e2e-tests
         environment: prod
         env: 
             my-env-value: ${{ vars.MY_ENV_VALUE || 'default value' }}
