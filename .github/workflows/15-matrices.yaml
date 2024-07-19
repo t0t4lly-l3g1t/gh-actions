@@ -15,9 +15,7 @@ jobs:
                     #- macos-latest # commented out as this is expensive in a priv repo. 
                     - windows-latest
                 include: # this allows you to extende the configuraiton. 
-                   - os: ubunti-latest # this will adds a new job only for ubuntu and not windows. 
-                     node-version: 16.x
-                   - os: ubuntu-latest
+                   - os: ubuntu-latest # this will adds a new job only for ubuntu and not windows.
                      node-version: 21.x
                      tag: experimental 
         steps:
