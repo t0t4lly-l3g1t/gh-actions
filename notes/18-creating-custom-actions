@@ -1,0 +1,21 @@
+Creating Custom Actions: 
+- Allows you to write, encapsulate and reuse custom logic in any programming language. 
+The 3 types of custom actions are: 
+
+Composit actions: 
+- Simple type 
+- Used for grouping collections of other actions. 
+- May not be enough for complex functionality. 
+
+JavaScript actions:
+- Allows writing any type of custom logic
+- Allows for useage of "@actions" packages to provide functionality
+- Requires knowledge of JS and Node
+
+Docker actions: 
+- Allow for writing custom actions in any language. 
+- Might be more verbose as only JS supports @actions. 
+
+Common Requirements for the above. 
+- All require an actions.yaml file. 
+- Must be on its own repo if it is to be reused by other repos. 
