@@ -1,0 +1,13 @@
+name: 17 - 2 - Custom Actions - JS
+run-name: 17 - 2 - Custom Actions - JS
+on:
+    workflow_dispatch:
+
+jobs:
+  dep-update:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4 # when using a custom action in the same repo you need to check it out
+        - name: Check for dependency updates
+          uses: ./.github/actions/js-deps-update
+          
