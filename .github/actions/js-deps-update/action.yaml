@@ -1,6 +1,19 @@
 name: Update NPM Deps
 description: Checks if there are updates to NPM packages, and creates a PR with the updated package.json files.
 
+inputs:
+  base-branch:
+    description: The branch used as the base for the dep update check. 
+    default: main
+    required: false
+  target-branch:
+    description: The branch from which the PR is created. 
+    default: update-dependencies
+    required: false
+  working-directory:
+    description: The working directory of the project to check for dependency updates. 
+    required: true
+    
 runs:
   using: node20
   main: index.js
