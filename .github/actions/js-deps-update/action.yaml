@@ -18,7 +18,7 @@ inputs:
   debug:
     description: Use if you want to output debug messages to the console. 
     type: boolean
-    default: 'false'
+    default: false
     
 runs:
   using: node20
