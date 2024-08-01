@@ -2,14 +2,13 @@ name: 17 - 3 - Custom Actions - Docker
 on:
     workflow_dispatch:
       inputs:
-        target-url:
+        target-url: # INPUT_TARGET_URL
           type: choice
           options:
             - http://www.google.com
             - http://www.f78y8d7fhasoidufho987y23.com
             - dsfa;lkjdf;lfdkj/adskjhasdfuuu.
         max-attempts: # INPUT_MAX_ATTEMPTS
-            type: string
             default: '10'
             required: false
         delay: # INPUT_DELAY
