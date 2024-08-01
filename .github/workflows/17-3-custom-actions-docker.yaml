@@ -3,8 +3,20 @@ on:
     workflow_dispatch:
       inputs:
         target-url:
-          type: string
-          default: http://www.google.com
+          type: choice
+          options:
+            - http://www.google.com
+            - http://www.f78y8d7fhasoidufho987y23.com
+            - dsfa;lkjdf;lfdkj/adskjhasdfuuu.
+        max-attempts: # INPUT_MAX_ATTEMPTS
+            type: string
+            default: '10'
+            required: false
+        delay: # INPUT_DELAY
+            description: Delay in seconds between attempts. 
+            default: '5'
+            required: false
+
         
 jobs:
     ping-url:
@@ -14,4 +26,6 @@ jobs:
             - name: Ping target URL
               uses: ./.github/actions/docker-ping-url
               with:
-                url: ${{ inputs.target-url}}
+                url: ${{ inputs.target-url }}
+                max-attempts: ${{ inputs.max-attempts }}
+                delay: ${{ inputs.delay }}
