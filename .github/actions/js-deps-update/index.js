@@ -29,8 +29,8 @@ async function run() {
         return;
     }
     
-    if (!validateBranchName({ branchName: targetBranch })) {
-        core.setFailed('Invalid target branch name. Branch names should only include chars, numbers, hyphens, underscores, dots, and forward slashes');
+    if (!validateBranchName({ branchName: headBranch })) {
+        core.setFailed('Invalid head branch name. Branch names should only include chars, numbers, hyphens, underscores, dots, and forward slashes');
         return;
     }
     
@@ -40,7 +40,7 @@ async function run() {
     }
     
     core.info(`[js-dependency-update] : base branch is ${baseBranch}`);
-    core.info(`[js-dependency-update] : target branch is ${targetBranch}`);
+    core.info(`[js-dependency-update] : head branch is ${headBranch}`);
     core.info(`[js-dependency-update] : working directory is ${workingDir}`);
     
     await exec.exec('npm update', [], commonExecOpts);
@@ -50,16 +50,16 @@ async function run() {
     if (gitStatus.stdout.length > 0) {
         core.info('[js-dependency-update] : There are updates available.');
         await setupGit();
-        await exec.exec(`git checkout -b ${targetBranch}`, [], commonExecOpts);
+        await exec.exec(`git checkout -b ${headBranch}`, [], commonExecOpts);
         await exec.exec('git add package.json package-lock.json', [], commonExecOpts);
         await exec.exec('git commit -m "chore: update dependencies"', [], commonExecOpts);
         
         try {
-            await exec.exec(`git push -u origin ${targetBranch}`, [], commonExecOpts);
+            await exec.exec(`git push -u origin ${headBranch}`, [], commonExecOpts);
         } catch (error) {
             core.warning('Failed to push branch. Attempting to rebase and push...');
             await exec.exec(`git pull --rebase origin ${baseBranch}`, [], commonExecOpts);
-            await exec.exec(`git push -u origin ${targetBranch}`, [], commonExecOpts);
+            await exec.exec(`git push -u origin ${headBranch}`, [], commonExecOpts);
         }
 
         const octokit = github.getOctokit(ghToken);
@@ -70,7 +70,7 @@ async function run() {
                 title: 'Update NPM dependencies',
                 body: 'This PR updates NPM packages',
                 base: baseBranch,
-                head: targetBranch
+                head: headBranch
             });
         } catch (e) {
             core.error('[js-dependency-update] : Something went wrong creating the PR. Check logs below.');
@@ -87,13 +87,13 @@ run();
   /*
     1. parse inputs: 
      1.1 base-branch from which to check for updates. 
-     1.2 target-branch to use to create the PR.
+     1.2 head-branch to use to create the PR.
      1.3 GitHub Token for authentication (to create PRs). 
      1.4 Working Dir for which to check for deps. 
     2. exec the npm update command withing the working dir.
     3. Check if there are modified package*.json files.
     4. If there are modified files:
-     4.1 Add and commit files to the target branch. 
-     4.2 Create a PR to the base-branch using the target-branch using the octokit API
+     4.1 Add and commit files to the head branch. 
+     4.2 Create a PR to the base-branch using the head-branch using the octokit API
     5. Otherwise, conclude the custom action. 
     */
