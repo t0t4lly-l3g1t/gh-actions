@@ -13,6 +13,10 @@ on:
           type: string
           default: 17-custom-actions/react-app
 
+permissions: # set permissions for the GITHUB_TOKEN used in the workflow
+  contents: write
+  pull-requests: write 
+
 jobs:
   dep-update:
     runs-on: ubuntu-latest
