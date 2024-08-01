@@ -65,46 +65,50 @@ async function run() {
     logger.debug('Checking for package updates');
 
     try {
-        await exec.exec('git fetch origin', [], commonExecOpts);
-        await exec.exec(`git checkout -b ${headBranch} origin/${baseBranch}`, [], commonExecOpts);
+        await setupGit();
+        
+        // Fetch all branches
+        logger.debug('Fetching all branches');
+        await exec.exec('git fetch --all', [], commonExecOpts);
+        
+        // Check if the head branch already exists
+        logger.debug(`Checking if ${headBranch} exists`);
+        const branchExists = await exec.exec(`git ls-remote --exit-code --heads origin ${headBranch}`, [], {
+            ...commonExecOpts,
+            ignoreReturnCode: true
+        }) === 0;
+
+        if (branchExists) {
+            logger.debug(`${headBranch} exists, resetting to ${baseBranch}`);
+            await exec.exec(`git checkout ${headBranch}`, [], commonExecOpts);
+            await exec.exec(`git reset --hard origin/${baseBranch}`, [], commonExecOpts);
+        } else {
+            logger.debug(`${headBranch} doesn't exist, creating new branch`);
+            await exec.exec(`git checkout -b ${headBranch} origin/${baseBranch}`, [], commonExecOpts);
+        }
+
+        // Update npm packages
+        logger.debug('Updating npm packages');
         await exec.exec('npm update', [], commonExecOpts);
         
         const gitStatus = await exec.getExecOutput('git status -s package*.json', [], commonExecOpts);
         
         if (gitStatus.stdout.length > 0) {
-            logger.debug('There are updates available.');
+            logger.info('Updates are available.');
 
-            logger.debug('Setting up git');
-            await setupGit();
             logger.debug('Committing package.json changes');
-
             await exec.exec('git add package.json package-lock.json', [], commonExecOpts);
             await exec.exec('git commit -m "chore: update dependencies"', [], commonExecOpts);
             
-            let pushAttempts = 0;
-            const maxPushAttempts = 3;
-            
-            while (pushAttempts < maxPushAttempts) {
-                try {
-                    await exec.exec(`git push -u origin ${headBranch}`, [], commonExecOpts);
-                    logger.info('Successfully pushed changes.');
-                    break;
-                } catch (error) {
-                    pushAttempts++;
-                    if (pushAttempts >= maxPushAttempts) {
-                        throw error;
-                    }
-                    logger.warning(`Push attempt ${pushAttempts} failed. Retrying...`);
-                    await exec.exec(`git fetch origin ${baseBranch}`, [], commonExecOpts);
-                    await exec.exec(`git rebase origin/${baseBranch}`, [], commonExecOpts);
-                }
-            }
+            logger.debug('Pushing changes');
+            await exec.exec(`git push -f origin ${headBranch}`, [], commonExecOpts);
+            logger.info('Successfully pushed changes.');
 
             logger.debug('Fetching Octokit API');
             const octokit = github.getOctokit(ghToken);
             try {
                 logger.debug(`Creating PR using head-branch ${headBranch}`);
-                await octokit.rest.pulls.create({
+                const { data: pullRequest } = await octokit.rest.pulls.create({
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     title: 'Update NPM dependencies',
@@ -112,11 +116,15 @@ async function run() {
                     base: baseBranch,
                     head: headBranch
                 });
-                logger.info('Successfully created PR.');
+                logger.info(`Successfully created PR #${pullRequest.number}`);
             } catch (e) {
-                logger.error('Something went wrong creating the PR. Check logs below.');
-                core.setFailed(e.message);
-                logger.error(e);
+                if (e.status === 422 && e.message.includes('A pull request already exists')) {
+                    logger.info('A pull request for this branch already exists. Skipping PR creation.');
+                } else {
+                    logger.error('Something went wrong creating the PR. Check logs below.');
+                    core.setFailed(e.message);
+                    logger.error(e);
+                }
             }
             
         } else {
