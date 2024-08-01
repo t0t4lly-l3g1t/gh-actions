@@ -29,4 +29,5 @@ jobs:
             head-branch: ${{ inputs.head-branch }}
             working-directory: ${{ inputs.working-directory }}
             gh-token: ${{ secrets.GITHUB_TOKEN }}
+            debug: ${{ inputs.debug }}
           
