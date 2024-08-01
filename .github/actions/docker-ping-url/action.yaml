@@ -1,0 +1,20 @@
+name: Ping URL
+description: Ping URL until max attempts have been exceeded. If resp is not 200 then fail. 
+
+inputs:
+  target-url:
+    description: URL to target with a series of pings. 
+    required: true
+  max-attempts:
+    description: Maxiumu number of attempts until the action fails. 
+    default: '10'
+    required: false
+  delay:
+    description: Delay in seconds between attempts. 
+    default: '5'
+    required: false
+
+runs: 
+  using: docker
+  image: Dockerfile # this can also use docker hub or container registry. Kali box could be a lt of fun! 
+  
