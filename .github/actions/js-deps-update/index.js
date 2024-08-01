@@ -3,7 +3,7 @@ const exec = require('@actions/exec');
 
 // Matches alphanumeric string with _-./; no spaces or other chars allowed
 const validateBranchName = ({ branchName }) => /^[a-zA-Z0-9_\-\.\/]+$/.test(branchName);
-const validateDirectoryhName = ({ dirName }) => /^[a-zA-Z0-9_\-\/]+$/.test(dirName);
+const validateDirectoryName = ({ dirName }) => /^[a-zA-Z0-9_\-\/]+$/.test(dirName);
 
 async function run() {
     const baseBranch = core.getInput('base-branch');
@@ -11,42 +11,42 @@ async function run() {
     const ghToken = core.getInput('gh-token'); // this needs to be a secret
     const workingDir = core.getInput('working-directory');
     const debug = core.getBooleanInput('debug');
-
+    
     core.setSecret('ghToken'); // protect the GitHub token by making it a secret. 
-
+    
     if (!validateBranchName({ branchName: baseBranch })) {
-        core.setFailed('Invalid base branch name. Branch names should only include chars, numbers, hyphens, underscores, dots, and forward slashes')
+        core.setFailed('Invalid base branch name. Branch names should only include chars, numbers, hyphens, underscores, dots, and forward slashes');
         return;
     }
-
+    
     if (!validateBranchName({ branchName: targetBranch })) {
-        core.setFailed('Invalid target branch name. Branch names should only include chars, numbers, hyphens, underscores, dots, and forward slashes')
+        core.setFailed('Invalid target branch name. Branch names should only include chars, numbers, hyphens, underscores, dots, and forward slashes');
         return;
     }
-
-    if (!validateDirectoryhName({ dirName: workingDir })) {
-        core.setFailed('Invalid working directory name. Branch names should only include chars, numbers, hyphens, underscores, and forward slashes')
+    
+    if (!validateDirectoryName({ dirName: workingDir })) {
+        core.setFailed('Invalid working directory name. Directory names should only include chars, numbers, hyphens, underscores, and forward slashes');
         return;
     }
-
+    
     core.info(`[js-dependency-update] : base branch is ${baseBranch}`);
-    core.info(`[js-dependency-update] : traget branch is ${targetBranch}`);
+    core.info(`[js-dependency-update] : target branch is ${targetBranch}`);
     core.info(`[js-dependency-update] : working directory is ${workingDir}`);
-
+    
     await exec.exec('npm update', [], {
         cwd: workingDir
     });
-
+    
     const gitStatus = await exec.getExecOutput('git status -s package*.json', [], {
         cwd: workingDir
     });
-
+    
     if (gitStatus.stdout.length > 0) {
-        core.info('[js-dependency-update] : There are updates available.')
+        core.info('[js-dependency-update] : There are updates available.');
     } else {
-        core.info('[js-dependency-update] : No updates at this time.')
+        core.info('[js-dependency-update] : No updates at this time.');
     }
-
+    
     core.info('I am a custom JS action.');
 }
 
