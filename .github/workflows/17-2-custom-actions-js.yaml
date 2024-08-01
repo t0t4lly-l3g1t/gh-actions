@@ -12,6 +12,9 @@ on:
         working-directory:
           type: string
           default: 17-custom-actions/react-app
+        debug:
+          type: boolean
+          default: false
 
 permissions: # set permissions for the GITHUB_TOKEN used in the workflow
   contents: write
