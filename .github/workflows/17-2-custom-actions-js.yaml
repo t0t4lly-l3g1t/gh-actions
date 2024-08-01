@@ -1,5 +1,5 @@
 name: 17 - 2 - Custom Actions - JS
-run-name: 17 - 2 - Custom Actions - JS
+run-name: 17 - 2 - Custom Actions - JS | Base Branch ${{ inputs.base-branch }} Target Branch ${{ inputs.target-branch }} Working Dir ${{ inputs.working-directory}}
 on:
     workflow_dispatch:
       inputs:
@@ -24,4 +24,5 @@ jobs:
             base-branch: ${{ inputs.base-branch }}
             target-branch: ${{ inputs.target-branch }}
             working-directory: ${{ inputs.working-directory }}
+            gh-token: ${{ secrets.GITHUB_TOKEN }}
           
