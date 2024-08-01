@@ -13,13 +13,15 @@ const validateDirectoryName = ({ dirName }) => /^[a-zA-Z0-9_\-\/]+$/.test(dirNam
 
 const setupLogger = ({debug, prefix} = {debug: false, prefix: ''}) => ({
     debug: (message) => {
-        if (debug){
+        if (debug) {
             core.info(`DEBUG ${prefix}${prefix ? ' : ' : ''}${message}`);
-            // this allows for extending the logging functionality
         }
     },
     info: (message) => {
         core.info(`${prefix}${prefix ? ' : ' : ''}${message}`);
+    },
+    warning: (message) => {
+        core.warning(`${prefix}${prefix ? ' : ' : ''}${message}`);
     },
     error: (message) => {
         core.error(`${prefix}${prefix ? ' : ' : ''}${message}`);
@@ -31,14 +33,14 @@ async function run() {
     const headBranch = core.getInput('head-branch', { required: true });
     const ghToken = core.getInput('gh-token', { required: true });
     const workingDir = core.getInput('working-directory', { required: true });
-    const debug = core.getBooleanInput('debug');
+    const debug = core.getInput('debug') === 'true';
     const logger = setupLogger({debug, prefix: '[JS-dependency-update]'});
     
     const commonExecOpts = {
         cwd: workingDir
     };
     
-    core.setSecret(ghToken); // protect the GitHub token by making it a secret. 
+    core.setSecret(ghToken);
     logger.debug('Validating Inputs - base-branch, head-branch, working-directory');
 
     if (!validateBranchName({ branchName: baseBranch })) {
@@ -62,49 +64,69 @@ async function run() {
     
     logger.debug('Checking for package updates');
 
-    await exec.exec('npm update', [], commonExecOpts);
-    
-    const gitStatus = await exec.getExecOutput('git status -s package*.json', [], commonExecOpts);
-    
-    if (gitStatus.stdout.length > 0) {
-        logger.debug('There are updates available.');
-
-        logger.debug('Setting up git');
-        await setupGit();
-        logger.debug('Committing and pushing package.json changes');
-
-        await exec.exec(`git checkout -b ${headBranch}`, [], commonExecOpts);
-        await exec.exec('git add package.json package-lock.json', [], commonExecOpts);
-        await exec.exec('git commit -m "chore: update dependencies"', [], commonExecOpts);
+    try {
+        await exec.exec('git fetch origin', [], commonExecOpts);
+        await exec.exec(`git checkout -b ${headBranch} origin/${baseBranch}`, [], commonExecOpts);
+        await exec.exec('npm update', [], commonExecOpts);
         
-        try {
-            await exec.exec(`git push -u origin ${headBranch}`, [], commonExecOpts);
-        } catch (error) {
-            core.warning('Failed to push branch. Attempting to rebase and push...');
-            await exec.exec(`git pull --rebase origin ${baseBranch}`, [], commonExecOpts);
-            await exec.exec(`git push -u origin ${headBranch}`, [], commonExecOpts);
-        }
-        logger.debug('Fetching Octokit API');
-        const octokit = github.getOctokit(ghToken);
-        try {
-            logger.debug(`Creating PR using head-branch ${headBranch}`);
-            await octokit.rest.pulls.create({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                title: 'Update NPM dependencies',
-                body: 'This PR updates NPM packages',
-                base: baseBranch,
-                head: headBranch
-            });
-        } catch (e) {
-            logger.error('Something went wrong creating the PR. Check logs below.');
-            core.setFailed(e.message);
-            logger.error(e);
-        }
+        const gitStatus = await exec.getExecOutput('git status -s package*.json', [], commonExecOpts);
         
-    } else {
-        logger.info('No updates at this time.');
-    }    
+        if (gitStatus.stdout.length > 0) {
+            logger.debug('There are updates available.');
+
+            logger.debug('Setting up git');
+            await setupGit();
+            logger.debug('Committing package.json changes');
+
+            await exec.exec('git add package.json package-lock.json', [], commonExecOpts);
+            await exec.exec('git commit -m "chore: update dependencies"', [], commonExecOpts);
+            
+            let pushAttempts = 0;
+            const maxPushAttempts = 3;
+            
+            while (pushAttempts < maxPushAttempts) {
+                try {
+                    await exec.exec(`git push -u origin ${headBranch}`, [], commonExecOpts);
+                    logger.info('Successfully pushed changes.');
+                    break;
+                } catch (error) {
+                    pushAttempts++;
+                    if (pushAttempts >= maxPushAttempts) {
+                        throw error;
+                    }
+                    logger.warning(`Push attempt ${pushAttempts} failed. Retrying...`);
+                    await exec.exec(`git fetch origin ${baseBranch}`, [], commonExecOpts);
+                    await exec.exec(`git rebase origin/${baseBranch}`, [], commonExecOpts);
+                }
+            }
+
+            logger.debug('Fetching Octokit API');
+            const octokit = github.getOctokit(ghToken);
+            try {
+                logger.debug(`Creating PR using head-branch ${headBranch}`);
+                await octokit.rest.pulls.create({
+                    owner: github.context.repo.owner,
+                    repo: github.context.repo.repo,
+                    title: 'Update NPM dependencies',
+                    body: 'This PR updates NPM packages',
+                    base: baseBranch,
+                    head: headBranch
+                });
+                logger.info('Successfully created PR.');
+            } catch (e) {
+                logger.error('Something went wrong creating the PR. Check logs below.');
+                core.setFailed(e.message);
+                logger.error(e);
+            }
+            
+        } else {
+            logger.info('No updates available at this time.');
+        }
+    } catch (error) {
+        logger.error('An error occurred during the update process:');
+        logger.error(error.message);
+        core.setFailed(error.message);
+    }
 }
 
 run();
