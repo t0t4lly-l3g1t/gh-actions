@@ -1,12 +1,12 @@
 name: 17 - 2 - Custom Actions - JS
-run-name: 17 - 2 - Custom Actions - JS | Base Branch ${{ inputs.base-branch }} Target Branch ${{ inputs.target-branch }} Working Dir ${{ inputs.working-directory}}
+run-name: 17 - 2 - Custom Actions - JS | Base Branch= ${{ inputs.base-branch }} Head Branch= ${{ inputs.head-branch }} Working Dir= ${{ inputs.working-directory}}
 on:
     workflow_dispatch:
       inputs:
         base-branch:
           type: string
           default: main
-        target-branch:
+        head-branch:
           type: string
           default: update-dependencies
         working-directory:
@@ -26,7 +26,7 @@ jobs:
           uses: ./.github/actions/js-deps-update
           with:
             base-branch: ${{ inputs.base-branch }}
-            target-branch: ${{ inputs.target-branch }}
+            head-branch: ${{ inputs.head-branch }}
             working-directory: ${{ inputs.working-directory }}
             gh-token: ${{ secrets.GITHUB_TOKEN }}
           
