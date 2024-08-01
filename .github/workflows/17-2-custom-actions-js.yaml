@@ -2,6 +2,16 @@ name: 17 - 2 - Custom Actions - JS
 run-name: 17 - 2 - Custom Actions - JS
 on:
     workflow_dispatch:
+      inputs:
+        base-branch:
+          type: string
+          default: main
+        target-branch:
+          type: string
+          default: update-dependencies
+        working-directory:
+          type: string
+          default: 17-custom-actions/react-app
 
 jobs:
   dep-update:
@@ -10,4 +20,8 @@ jobs:
         - uses: actions/checkout@v4 # when using a custom action in the same repo you need to check it out
         - name: Check for dependency updates
           uses: ./.github/actions/js-deps-update
+          with:
+            base-branch: ${{ inputs.base-branch }}
+            target-branch: ${{ inputs.target-branch }}
+            working-directory: ${{ inputs.working-directory }}
           
