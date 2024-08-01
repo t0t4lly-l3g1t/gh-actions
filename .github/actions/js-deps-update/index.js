@@ -51,7 +51,6 @@ async function run() {
 }
 
 run();
-
   /*
     1. parse inputs: 
      1.1 base-branch from which to check for updates. 
