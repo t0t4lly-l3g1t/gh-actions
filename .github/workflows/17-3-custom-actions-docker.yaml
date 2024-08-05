@@ -2,13 +2,13 @@ name: 17 - 3 - Custom Actions - Docker
 on:
     workflow_dispatch:
       inputs:
-        target-url: # INPUT_TARGET_URL
+        target_url: # INPUT_TARGET_URL
           type: choice
           options:
             - http://www.google.com
             - http://www.f78y8d7fhasoidufho987y23.com
             - dsfa;lkjdf;lfdkj/adskjhasdfuuu.
-        max-attempts: # INPUT_MAX_ATTEMPTS
+        max_attempts: # INPUT_MAX_ATTEMPTS
             default: '10'
             required: false
         delay: # INPUT_DELAY
@@ -25,6 +25,6 @@ jobs:
             - name: Ping target URL
               uses: ./.github/actions/docker-ping-url
               with:
-                url: ${{ inputs.target-url }}
-                max-attempts: ${{ inputs.max-attempts }}
+                url: ${{ inputs.target_url }}
+                max_attempts: ${{ inputs.max_attempts }}
                 delay: ${{ inputs.delay }}
