@@ -12,7 +12,7 @@ def ping_url(target_url, delay, max_attempts):
                 print(f"The website {target_url} is available.")
                 return True
         except requests.ConnectionError:
-            print(f"Website ${target_url} is unreachable. Retrying in {delay} seconds...")
+            print(f"Website {target_url} is unreachable. Retrying in {delay} seconds...")
             time.sleep(delay)
             attempts += 1
         except requests.exceptions.MissingSchema:
