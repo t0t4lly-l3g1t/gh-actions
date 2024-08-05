@@ -25,6 +25,6 @@ jobs:
             - name: Ping target URL
               uses: ./.github/actions/docker-ping-url
               with:
-                url: ${{ inputs.target_url }}
+                target_url: ${{ inputs.target_url }}
                 max_attempts: ${{ inputs.max_attempts }}
                 delay: ${{ inputs.delay }}
