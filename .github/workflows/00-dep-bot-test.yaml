@@ -8,6 +8,7 @@ on:
 permissions:
   actions: write
   security-events: read
+  secrets: read
   
 jobs:
   check-dependabot-alerts:
