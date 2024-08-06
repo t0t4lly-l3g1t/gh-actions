@@ -18,8 +18,11 @@ jobs:
           # Fetch Dependabot alerts
           dependabot_alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/vulnerability-alerts")
-          
-          # Check if alerts are present
+
+          # Print the raw response for debugging
+          echo "$dependabot_alerts" | jq .
+
+          # Check if alerts are present and process them
           if [ "$(echo "$dependabot_alerts" | jq '. | length')" -gt 0 ]; then
             echo "$dependabot_alerts" | jq -r '.[] | "\(.package.name) - \(.severity)"' > alerts.txt
             echo "::set-output name=alerts::$(cat alerts.txt)"
@@ -27,6 +30,7 @@ jobs:
             echo "No Dependabot alerts found."
             echo "::set-output name=alerts::No alerts"
           fi
+        shell: /usr/bin/bash -e {0}
 
       - name: Send alerts to Slack
         if: steps.dependabot.outputs.alerts != 'No alerts'
