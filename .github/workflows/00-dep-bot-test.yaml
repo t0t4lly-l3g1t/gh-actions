@@ -1,42 +1,65 @@
-name: Dependabot Alerts to Slack
+name: Dependabot Slack Notification
 
 on:
   schedule:
-    - cron: '0 3 * * 0'  # Runs every Sunday at 3:00 AM UTC
-  workflow_dispatch:  # Allows manual trigger
+    - cron: '0 3 * * 0'  # Runs at 3:00 AM every Sunday
+  workflow_dispatch:  # Allows manual triggering
 
+permissions:
+  actions: write
+  security-events: read
+  
 jobs:
-  send-alerts:
+  check-dependabot-alerts:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Get Dependabot alerts
-        id: dependabot
+      - name: Check for Dependabot Alerts
+        id: check-alerts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Fetch Dependabot alerts
-          dependabot_alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/vulnerability-alerts")
-
-          # Print the raw response for debugging
-          echo "$dependabot_alerts" | jq .
-
-          # Check if alerts are present and process them
-          if [ "$(echo "$dependabot_alerts" | jq '. | length')" -gt 0 ]; then
-            echo "$dependabot_alerts" | jq -r '.[] | "\(.package.name) - \(.severity)"' > alerts.txt
-            echo "::set-output name=alerts::$(cat alerts.txt)"
+          alerts=$(gh api repos/${{ github.repository }}/dependabot/alerts --jq '[.[] | {name: .security_advisory.summary, severity: .security_advisory.severity}]')
+          echo "ALERTS=$alerts" >> $GITHUB_ENV
+          alert_count=$(echo $alerts | jq 'length')
+          echo "ALERT_COUNT=$alert_count" >> $GITHUB_ENV
+          if [ $alert_count -gt 0 ]; then
+            echo "HAS_ALERTS=true" >> $GITHUB_ENV
           else
-            echo "No Dependabot alerts found."
-            echo "::set-output name=alerts::No alerts"
+            echo "HAS_ALERTS=false" >> $GITHUB_ENV
           fi
-        shell: /usr/bin/bash -e {0}
 
-      - name: Send alerts to Slack
-        if: steps.dependabot.outputs.alerts != 'No alerts'
-        uses: slackapi/slack-github-action@v1
+      - name: Send Slack Notification
+        if: env.HAS_ALERTS == 'true'
+        uses: 8398a7/action-slack@v3
         with:
-          slack-message: |
-            Dependabot Alerts:
-            $(cat alerts.txt)
-          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          status: custom
+          fields: repo,message
+          custom_payload: |
+            {
+              "text": ":warning: Dependabot Alert Notification",
+              "attachments": [
+                {
+                  "color": "danger",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Number of Alerts",
+                      "value": "${{ env.ALERT_COUNT }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Alerts",
+                      "value": "${{ toJson(fromJson(env.ALERTS)) }}",
+                      "short": false
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
