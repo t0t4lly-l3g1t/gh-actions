@@ -16,7 +16,7 @@ jobs:
       - name: Check for Dependabot Alerts
         id: check-alerts
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEP_BOT_PAT }}
         run: |
           alerts=$(gh api repos/${{ github.repository }}/dependabot/alerts --jq '[.[] | {name: .security_advisory.summary, severity: .security_advisory.severity}]')
           echo "ALERTS=$alerts" >> $GITHUB_ENV
