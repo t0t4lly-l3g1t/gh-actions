@@ -1,4 +1,4 @@
-name: Dependabot Slack Notification
+name: Dependabot Slack Notification - Testing
 on:
   schedule:
     - cron: '0 3 * * 0'  # Runs at 3:00 AM every Sunday
@@ -66,5 +66,4 @@ jobs:
             }
             EOF
         env:
-          # GITHUB_TOKEN: ${{ secrets.DEP_BOT_PAT }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
