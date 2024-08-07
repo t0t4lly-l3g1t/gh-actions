@@ -66,5 +66,5 @@ jobs:
             }
             EOF
         env:
-          GITHUB_TOKEN: ${{ secrets.DEP_BOT_PAT }}
+          # GITHUB_TOKEN: ${{ secrets.DEP_BOT_PAT }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
