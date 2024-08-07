@@ -53,13 +53,13 @@ jobs:
                       "title": "Number of Alerts",
                       "value": "${{ env.ALERT_COUNT }}",
                       "short": true
-                    },
-                    {
-                      "title": "Alerts",
-                      "value": ${{ toJson(fromJson(env.ALERTS)) }},
-                      "short": false
                     }
                   ]
+                },
+                {
+                  "color": "warning",
+                  "title": "Alert Details",
+                  "fields": ${{ toJson(fromJson(env.ALERTS)) }}
                 }
               ]
             }
