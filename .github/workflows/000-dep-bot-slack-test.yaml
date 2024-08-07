@@ -28,6 +28,12 @@ jobs:
           echo "ALERT_COUNT=$alert_count" >> $GITHUB_ENV
           if [ $alert_count -gt 0 ]; then
             echo "HAS_ALERTS=true" >> $GITHUB_ENV
+            
+            # Format alerts for Slack
+            formatted_alerts=$(echo $alerts | jq -r '.[] | "• *Name:* \(.name)\n  *Severity:* \(.severity)"' | sed ':a;N;$!ba;s/\n/\\n/g')
+            echo "FORMATTED_ALERTS<<EOF" >> $GITHUB_ENV
+            echo "$formatted_alerts" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
           else
             echo "HAS_ALERTS=false" >> $GITHUB_ENV
           fi
@@ -53,13 +59,13 @@ jobs:
                       "title": "Number of Alerts",
                       "value": "${{ env.ALERT_COUNT }}",
                       "short": true
+                    },
+                    {
+                      "title": "Alert Details",
+                      "value": "${{ env.FORMATTED_ALERTS }}",
+                      "short": false
                     }
                   ]
-                },
-                {
-                  "color": "warning",
-                  "title": "Alert Details",
-                  "fields": ${{ toJson(fromJson(env.ALERTS)) }}
                 }
               ]
             }
