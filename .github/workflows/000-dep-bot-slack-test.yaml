@@ -38,7 +38,6 @@ jobs:
           status: custom
           fields: repo,message
           custom_payload: |
-            cat << EOF
             {
               "text": ":warning: Dependabot Alert Notification",
               "attachments": [
@@ -57,14 +56,13 @@ jobs:
                     },
                     {
                       "title": "Alerts",
-                      "value": $(echo '${{ env.ALERTS }}' | jq -c '.'),
+                      "value": ${{ toJson(fromJson(env.ALERTS)) }},
                       "short": false
                     }
                   ]
                 }
               ]
             }
-            EOF
         env:
           GITHUB_TOKEN: ${{ secrets.DEP_BOT_PAT }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
