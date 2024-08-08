@@ -22,11 +22,15 @@ jobs:
     steps:
         - uses: actions/checkout@v4 # when using a custom action in the same repo you need to check it out
         - name: Setup Node and NPM Deps
+          id: setup-deps
           uses: ./.github/actions/composite-cache-deps # make use of the action created earlier
           with:
             node-version: 20.x # need to pass this into the custom action
             working-dir: ${{ env.working-directory }} # this is the dir where the package.lock file lives
             target-env: ${{ inputs.target-env }}
+        - name: Print setup deps output
+          run: | 
+            echo "Installed Dependencies: ${{ steps.setup-deps.outputs.installed-deps }}"
         - name: Test
           run: npm run test
         - name: Build

@@ -15,6 +15,14 @@ inputs:
     default: "dev"
     required: false
 
+outputs:
+  installed-deps: # If there was no cache hit then the dependencies were installed
+    description: 'If dependencies were installed or not'
+    value: ${{ steps.cache.outputs.cache.hit != 'true'}}
+  custom-output-example:
+    description: 'showing output from a custom step'
+    value: ${{ steps.custom-ouput-example.outputs.custom-output }} # reference by the ID on the step and then the key of the output appended to the GITHUB_OUTPUT file
+
 runs: 
   using: composite
   steps: 
@@ -33,3 +41,8 @@ runs:
       run: ${{ inputs.target-env == 'dev' && 'npm ci' || 'npm ci --omit=dev' }}
       shell: bash
       working-directory: ${{ inputs.working-dir }}
+    - name: Custom Output Example
+      shell: bash
+      id: custom-ouput-example
+      run: echo "custom-output=Always be testing!" >> "$GITHUB_OUTPUT" 
+
