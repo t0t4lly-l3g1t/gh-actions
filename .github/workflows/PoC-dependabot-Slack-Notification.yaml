@@ -28,6 +28,16 @@ jobs:
           echo "ALERT_COUNT=$alert_count" >> $GITHUB_ENV
           if [ $alert_count -gt 0 ]; then
             echo "HAS_ALERTS=true" >> $GITHUB_ENV
+
+            # Sort Alerts by severity before sending to Slack
+            sorteed_alerts = $(echo $alerts | jq -r '
+              sort_by(.severity)
+              | reverse
+              | .[]
+              | "• *Name:* \(.name)\n  *Severity:* \(.severity)"')
+            echo "SORTED_ALERTS<<EOF" >> $GITHUB_ENV
+            echo "$sorted_alerts" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
             
             # Format alerts for Slack
             formatted_alerts=$(echo $alerts | jq -r '.[] | "• *Name:* \(.name)\n  *Severity:* \(.severity)"' | sed ':a;N;$!ba;s/\n/\\n/g')
@@ -63,6 +73,11 @@ jobs:
                     {
                       "title": "Alert Details",
                       "value": "${{ env.FORMATTED_ALERTS }}",
+                      "short": false
+                    },
+                    {
+                      "title": "For more information please check the ${{ github.repository }} Security page.",
+                      "value": "https://github.com/${{ github.repository }}/security/dependabot",
                       "short": false
                     }
                   ]
