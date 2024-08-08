@@ -64,6 +64,11 @@ jobs:
                       "title": "Alert Details",
                       "value": "${{ env.FORMATTED_ALERTS }}",
                       "short": false
+                    },
+                    {
+                      "title": "More information about the Security Alerts found in the ${{ github.repository }} can be found here",
+                      "value": "https://github.com/${{ github.repository }}/security/dependabot",
+                      "short": false
                     }
                   ]
                 }
