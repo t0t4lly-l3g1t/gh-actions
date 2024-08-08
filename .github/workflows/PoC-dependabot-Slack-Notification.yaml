@@ -46,38 +46,16 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: custom
-          fields: repo,message
-          custom_payload: |
-            {
-              "text": ":warning: Dependabot Alert Notification",
-              "attachments": [
-                {
-                  "color": "danger",
-                  "fields": [
-                    {
-                      "title": "Repository",
-                      "value": "${{ github.repository }}",
-                      "short": true
-                    },
-                    {
-                      "title": "Number of Alerts",
-                      "value": "${{ env.ALERT_COUNT }}",
-                      "short": true
-                    },
-                    {
-                      "title": "Alert Details",
-                      "value": "${{ env.SORTED_ALERTS }}",
-                      "short": false
-                    },
-                    {
-                      "title": "Security Alerts",
-                      "value": "https://github.com/${{ github.repository }}/security/dependabot",
-                      "short": false
-                    }
-                  ]
-                }
-              ]
-            }
+          title: ":warning: Dependabot Alert Notification"
+          text: |
+            *Repository:* ${{ github.repository }}
+            *Number of Alerts:* ${{ env.ALERT_COUNT }}
+            
+            *Alert Details:*
+            ${{ env.SORTED_ALERTS }}
+            
+            *Security Alerts:* 
+            https://github.com/${{ github.repository }}/security/dependabot
         env:
           GITHUB_TOKEN: ${{ secrets.DEP_BOT_PAT }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
