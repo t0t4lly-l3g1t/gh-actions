@@ -26,6 +26,7 @@ jobs:
     steps:
         - uses: actions/checkout@v4 # when using a custom action in the same repo you need to check it out
         - name: Check for dependency updates
+          id: update-deps
           uses: ./.github/actions/js-deps-update
           with:
             base-branch: ${{ inputs.base-branch }}
@@ -33,4 +34,7 @@ jobs:
             working-directory: ${{ inputs.working-directory }}
             gh-token: ${{ secrets.GITHUB_TOKEN }}
             debug: ${{ inputs.debug }}
+        - name: Print custom action output
+          run: |
+            echo "Updates Available: ${{ steps.update-deps.outputs.updates-available }}"
           

@@ -93,7 +93,10 @@ async function run() {
         
         const gitStatus = await exec.getExecOutput('git status -s package*.json', [], commonExecOpts);
         
+        let updatesAvailable = false;
+
         if (gitStatus.stdout.length > 0) {
+            updatesAvailable = true;
             logger.info('Updates are available.');
 
             logger.debug('Committing package.json changes');
@@ -130,6 +133,10 @@ async function run() {
         } else {
             logger.info('No updates available at this time.');
         }
+
+        logger.debug('setting updates-available output to ${updatesAvailable}');
+        core.setOutput('updates-available', true); // Adding output that can be used by the action.yaml file. 
+
     } catch (error) {
         logger.error('An error occurred during the update process:');
         logger.error(error.message);

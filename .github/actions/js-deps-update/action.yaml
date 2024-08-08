@@ -19,6 +19,10 @@ inputs:
     description: Use if you want to output debug messages to the console. 
     type: boolean
     default: false
+
+outputs:
+  updates-available:
+    description: Are there updates available? 
     
 runs:
   using: node20
