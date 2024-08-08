@@ -29,14 +29,10 @@ jobs:
           if [ $alert_count -gt 0 ]; then
             echo "HAS_ALERTS=true" >> $GITHUB_ENV
             
-            # Sort alerts by severity (high, medium, low)
-            sorted_alerts=$(echo $alerts | jq -r '
-              sort_by(.severity)
-              | reverse
-              | map("- *Name:* \(.name)\n  *Severity:* \(.severity)") 
-              | join("\n")')
-            echo "SORTED_ALERTS<<EOF" >> $GITHUB_ENV
-            echo "$sorted_alerts" >> $GITHUB_ENV
+            # Format alerts for Slack
+            formatted_alerts=$(echo $alerts | jq -r '.[] | "• *Name:* \(.name)\n  *Severity:* \(.severity)"' | sed ':a;N;$!ba;s/\n/\\n/g')
+            echo "FORMATTED_ALERTS<<EOF" >> $GITHUB_ENV
+            echo "$formatted_alerts" >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
           else
             echo "HAS_ALERTS=false" >> $GITHUB_ENV
@@ -46,16 +42,33 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: custom
-          title: ":warning: Dependabot Alert Notification"
-          text: |
-            *Repository:* ${{ github.repository }}
-            *Number of Alerts:* ${{ env.ALERT_COUNT }}
-            
-            *Alert Details:*
-            ${{ env.SORTED_ALERTS }}
-            
-            *Security Alerts:* 
-            https://github.com/${{ github.repository }}/security/dependabot
+          fields: repo,message
+          custom_payload: |
+            {
+              "text": ":warning: Dependabot Alert Notification",
+              "attachments": [
+                {
+                  "color": "danger",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Number of Alerts",
+                      "value": "${{ env.ALERT_COUNT }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Alert Details",
+                      "value": "${{ env.FORMATTED_ALERTS }}",
+                      "short": false
+                    }
+                  ]
+                }
+              ]
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.DEP_BOT_PAT }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
