@@ -23,8 +23,12 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: Ping target URL
+              id: ping-url
               uses: ./.github/actions/docker-ping-url
               with:
                 target_url: ${{ inputs.target_url }}
                 max_attempts: ${{ inputs.max_attempts }}
                 delay: ${{ inputs.delay }}
+            - name: Print output from ping-url
+              run: |
+                echo "Target URL Reachable: ${{ steps.ping-url.outputs.url-reachable }}"

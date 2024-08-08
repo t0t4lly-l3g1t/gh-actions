@@ -2,6 +2,10 @@ import os
 import requests
 import time
 
+def set_output(file_path, key, value):
+    with open(file_path, "a") as file:
+        print(f"{key}={value}", file=file)
+
 def ping_url(target_url, delay, max_attempts): 
     attempts = 0
     # needs input validation
@@ -28,6 +32,7 @@ def run():
 
     website_reachable = ping_url(target_url, delay, max_attempts)
 
+    set_output(os.getenv("GITHUB_OUTPUT"), "url-reachable", website_reachable)
     if not website_reachable:
         raise Exception(f"Website {target_url} is malformed or unreachable.")
     
