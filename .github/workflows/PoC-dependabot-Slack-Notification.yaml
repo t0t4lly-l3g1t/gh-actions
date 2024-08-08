@@ -30,7 +30,7 @@ jobs:
             echo "HAS_ALERTS=true" >> $GITHUB_ENV
 
             # Sort Alerts by severity before sending to Slack
-            sorteed_alerts = $(echo $alerts | jq -r '
+            sorted_alerts = $(echo $alerts | jq -r '
               sort_by(.severity)
               | reverse
               | .[]
